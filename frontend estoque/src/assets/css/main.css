@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a1428;
+  --foreground: #dbe5f3;
+  --card: #121f3c;
+  --card-foreground: #dbe5f3;
+  --primary: #4c84d9;
+  --primary-foreground: #ffffff;
+  --secondary: #18284b;
+  --secondary-foreground: #d6e2f4;
+  --muted: #162543;
+  --muted-foreground: #8ea0bb;
+  --accent: #1a2f55;
+  --accent-foreground: #d6e2f4;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #223862;
+  --input: #223862;
+  --ring: #4c84d9;
+  --radius: 0.5rem;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --scrollbar-track: #12213f;
+  --scrollbar-thumb: #335a96;
+  --scrollbar-thumb-hover: #4c84d9;
+}
+
+.dark {
+  --background: #070f22;
+  --foreground: #dbe5f3;
+  --card: #0f1b37;
+  --card-foreground: #dbe5f3;
+  --primary: #4c84d9;
+  --primary-foreground: #ffffff;
+  --secondary: #142449;
+  --secondary-foreground: #d6e2f4;
+  --muted: #12213f;
+  --muted-foreground: #8ea0bb;
+  --accent: #173059;
+  --accent-foreground: #d6e2f4;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #1f355f;
+  --input: #1f355f;
+  --ring: #4c84d9;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --scrollbar-track: #0d1a33;
+  --scrollbar-thumb: #3a67aa;
+  --scrollbar-thumb-hover: #5a93ea;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: radial-gradient(circle at top left, #3b82f620 0%, transparent 48%),
+              radial-gradient(circle at bottom right, #22d3ee12 0%, transparent 52%),
+              var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
+  border: 2px solid var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Transitions */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
+}
