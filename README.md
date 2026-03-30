@@ -33,5 +33,36 @@ O projeto utiliza uma estrutura de **Monorepo** para facilitar o desenvolvimento
 
 ```text
 /
-├── backend/       # API Laravel, Migrations e Regras de Negócio
-└── frontend/      # Interface do Usuário e Consumo da API
+├── estoque-api/        # API Laravel, migrations e regras de negócio
+└── frontend estoque/   # Interface e consumo da API
+```
+
+---
+
+## 🖼️ Capturas do Projeto (Portfólio)
+
+Adicione os arquivos de imagem no caminho `images/` na raiz do repositório usando os nomes abaixo.
+
+### 1. Dashboard
+
+![Visão geral do Dashboard](images/dashboard-geral.png)
+
+Legenda: Visão geral do Dashboard: controle reativo de movimentações e alertas de níveis críticos.
+
+### 2. Cadastro de Produtos
+
+![Gestão completa de itens](images/cadastro-produtos.png)
+
+Legenda: Gestão completa de itens com validação de dados e integração fluida com a API Laravel.
+
+### 3. Documentação da API (Swagger)
+
+![Documentação interativa da API RESTful](images/swagger-api.png)
+
+Legenda: Documentação interativa da API RESTful com Swagger, facilitando a integração e testes.
+
+### 4. Estrutura do Banco de Dados (DER)
+
+![Modelagem relacional no MySQL](images/der-banco.png)
+
+Legenda: Modelagem relacional no MySQL garantindo integridade e rastreabilidade total das mercadorias.
