@@ -1,0 +1,1272 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Estoque Pro API",
+    "version": "1.0.0",
+    "description": "API RESTful completa para gestão de estoque com autenticação Laravel Sanctum. Sistema profissional de controle de produtos, fornecedores, entradas e saídas de estoque.",
+    "contact": {
+      "name": "Suporte Estoque Pro",
+      "email": "support@estoquepro.com"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000",
+      "description": "Servidor de Desenvolvimento"
+    },
+    {
+      "url": "https://api.estoquepro.com",
+      "description": "Servidor de Produção"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "João Silva"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "joao@example.com"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Samsung Galaxy S23"
+          },
+          "code": {
+            "type": "string",
+            "example": "SGS23-256"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 4999.99
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 30
+          },
+          "minimumstock": {
+            "type": "integer",
+            "example": 5
+          },
+          "supplier_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Supplier": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Samsung Electronics"
+          },
+          "CNPJ": {
+            "type": "string",
+            "example": "12.345.678/0001-00"
+          },
+          "tel": {
+            "type": "string",
+            "example": "(11) 99999-0000"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "contato@samsung.com"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Entry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Entrada de Samsung Galaxy S23"
+          },
+          "data_de_entrada": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-03-29"
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 15
+          },
+          "reason": {
+            "type": "string",
+            "example": "Reabastecimento"
+          },
+          "product_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "user_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Exit": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Saída de Samsung Galaxy S23"
+          },
+          "data_de_saida": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-03-29"
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 2
+          },
+          "reason": {
+            "type": "string",
+            "example": "Venda"
+          },
+          "product_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "user_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "joao.silva@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "password"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "token": {
+            "type": "string",
+            "example": "1|abcdefghijklmnopqrstuvwxyz"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token Bearer obtido no login"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Autenticação",
+      "description": "Endpoints de login, logout e autenticação de usuários"
+    },
+    {
+      "name": "Produtos",
+      "description": "CRUD completo de produtos do estoque"
+    },
+    {
+      "name": "Entradas",
+      "description": "Registros de entrada de produtos no estoque"
+    },
+    {
+      "name": "Saídas",
+      "description": "Registros de saída de produtos do estoque"
+    },
+    {
+      "name": "Fornecedores",
+      "description": "Gestão de fornecedores de produtos"
+    },
+    {
+      "name": "Usuários",
+      "description": "Gestão de usuários do sistema"
+    }
+  ],
+  "paths": {
+    "/api/login": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Fazer login",
+        "description": "Autentica um usuário e retorna um token Bearer para acesso aos endpoints protegidos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              },
+              "example": {
+                "email": "joao.silva@example.com",
+                "password": "password"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validação falhou (email ou senha inválidos)"
+          }
+        }
+      }
+    },
+    "/api/logout": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Fazer logout",
+        "description": "Revoga o token de acesso do usuário autenticado",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Logout realizado com sucesso"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autenticado ou token inválido"
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": ["Produtos"],
+        "summary": "Listar todos os produtos",
+        "description": "Retorna uma lista completa de todos os produtos cadastrados no sistema",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de produtos retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autenticado"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Produtos"],
+        "summary": "Criar novo produto",
+        "description": "Cadastra um novo produto no sistema de estoque",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "code", "price", "quantity", "minimumstock", "supplier_id"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Samsung Galaxy S23"
+                  },
+                  "code": {
+                    "type": "string",
+                    "example": "SGS23-256"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 4999.99
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "example": 30
+                  },
+                  "minimumstock": {
+                    "type": "integer",
+                    "example": 5
+                  },
+                  "supplier_id": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Produto criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validação falhou"
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": ["Produtos"],
+        "summary": "Obter produto por ID",
+        "description": "Retorna os detalhes de um produto específico",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Produtos"],
+        "summary": "Atualizar produto",
+        "description": "Atualiza os dados de um produto existente",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  },
+                  "minimumstock": {
+                    "type": "integer"
+                  },
+                  "supplier_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Produto atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Produtos"],
+        "summary": "Deletar produto",
+        "description": "Remove um produto do sistema",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Produto deletado com sucesso"
+          },
+          "404": {
+            "description": "Produto não encontrado"
+          }
+        }
+      }
+    },
+    "/api/entryProduct": {
+      "get": {
+        "tags": ["Entradas"],
+        "summary": "Listar todas as entradas",
+        "description": "Retorna uma lista de todas as entradas de produtos registradas",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de entradas retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Entry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Entradas"],
+        "summary": "Registrar nova entrada",
+        "description": "Registra uma nova entrada de produto no estoque",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "data_de_entrada", "quantity", "reason", "product_id", "user_id"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Entrada de Samsung Galaxy S23"
+                  },
+                  "data_de_entrada": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-03-29"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "example": 15
+                  },
+                  "reason": {
+                    "type": "string",
+                    "example": "Reabastecimento"
+                  },
+                  "product_id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "user_id": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Entrada registrada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Entry"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/entryProduct/{id}": {
+      "get": {
+        "tags": ["Entradas"],
+        "summary": "Obter entrada por ID",
+        "description": "Retorna os detalhes de uma entrada específica",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entrada encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Entry"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Entradas"],
+        "summary": "Atualizar entrada",
+        "description": "Atualiza os dados de uma entrada existente",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entrada atualizada com sucesso"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Entradas"],
+        "summary": "Deletar entrada",
+        "description": "Remove uma entrada do sistema",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entrada deletada com sucesso"
+          }
+        }
+      }
+    },
+    "/api/exitProduct": {
+      "get": {
+        "tags": ["Saídas"],
+        "summary": "Listar todas as saídas",
+        "description": "Retorna uma lista de todas as saídas de produtos registradas",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de saídas retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Exit"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Saídas"],
+        "summary": "Registrar nova saída",
+        "description": "Registra uma nova saída de produto do estoque",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "data_de_saida", "quantity", "reason", "product_id", "user_id"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Saída de Samsung Galaxy S23"
+                  },
+                  "data_de_saida": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2026-03-29"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "example": 2
+                  },
+                  "reason": {
+                    "type": "string",
+                    "example": "Venda"
+                  },
+                  "product_id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "user_id": {
+                    "type": "integer",
+                    "example": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Saída registrada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Exit"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/exitProduct/{id}": {
+      "get": {
+        "tags": ["Saídas"],
+        "summary": "Obter saída por ID",
+        "description": "Retorna os detalhes de uma saída específica",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saída encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Exit"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Saídas"],
+        "summary": "Atualizar saída",
+        "description": "Atualiza os dados de uma saída existente",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saída atualizada com sucesso"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Saídas"],
+        "summary": "Deletar saída",
+        "description": "Remove uma saída do sistema",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saída deletada com sucesso"
+          }
+        }
+      }
+    },
+    "/api/supply": {
+      "get": {
+        "tags": ["Fornecedores"],
+        "summary": "Listar todos os fornecedores",
+        "description": "Retorna uma lista completa de todos os fornecedores cadastrados",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de fornecedores retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Supplier"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Fornecedores"],
+        "summary": "Criar novo fornecedor",
+        "description": "Cadastra um novo fornecedor no sistema",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "CNPJ", "tel", "email"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Samsung Electronics"
+                  },
+                  "CNPJ": {
+                    "type": "string",
+                    "example": "12.345.678/0001-00"
+                  },
+                  "tel": {
+                    "type": "string",
+                    "example": "(11) 99999-0000"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "contato@samsung.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Fornecedor criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Supplier"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/supply/{id}": {
+      "get": {
+        "tags": ["Fornecedores"],
+        "summary": "Obter fornecedor por ID",
+        "description": "Retorna os detalhes de um fornecedor específico",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fornecedor encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Supplier"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Fornecedores"],
+        "summary": "Atualizar fornecedor",
+        "description": "Atualiza os dados de um fornecedor existente",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fornecedor atualizado com sucesso"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Fornecedores"],
+        "summary": "Deletar fornecedor",
+        "description": "Remove um fornecedor do sistema",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fornecedor deletado com sucesso"
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": ["Usuários"],
+        "summary": "Listar todos os usuários",
+        "description": "Retorna uma lista completa de todos os usuários cadastrados no sistema",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de usuários retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Usuários"],
+        "summary": "Criar novo usuário",
+        "description": "Cadastra um novo usuário no sistema",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Maria Oliveira"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "maria.oliveira@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "senha_segura_123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "tags": ["Usuários"],
+        "summary": "Obter usuário por ID",
+        "description": "Retorna os detalhes de um usuário específico",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Usuários"],
+        "summary": "Atualizar usuário",
+        "description": "Atualiza os dados de um usuário existente",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado com sucesso"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Usuários"],
+        "summary": "Deletar usuário",
+        "description": "Remove um usuário do sistema",
+        "security": [
+          {
+            "bearerToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário deletado com sucesso"
+          }
+        }
+      }
+    }
+  }
+}
